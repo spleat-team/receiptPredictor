@@ -1,0 +1,12 @@
+FROM tensorflow/tensorflow:devel-py3
+
+WORKDIR /app
+ADD ./receiptServer.py /app
+
+RUN pip install FLASK
+
+ENV FLASK_APP /app/receiptServer.py
+
+CMD flask run
+
+#CMD [ "flask", "./___myScript___.py" ]
