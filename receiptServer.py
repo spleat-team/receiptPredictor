@@ -13,14 +13,10 @@ def init():
     # load the model
     print("Loading is_receipt_model")
     is_receipt_model = tf.keras.models.load_model(
-        r'E:\Projects\ML_Project\Final_Project\all\results\classify_model.h5')
+        r'resources/TrainModel/classify_model.h5')
     print("Loading detect_receipt_model")
     detect_receipt_model = tf.keras.models.load_model(
-        r'E:\Projects\ML_Project\Final_Project\detection\detector\detection_model.h5')
-
-    # # compile the model - required?
-    # is_receipt_model.compile(optimizer="sgd", loss='categorical_crossentropy')
-    # detect_receipt_model.compile(optimizer="sgd",loss='categorical_crossentropy')
+        r'resources/TrainModel/detection_model.h5')
 
     # load the graph and use it in prediction level
     graph = tf.get_default_graph()
