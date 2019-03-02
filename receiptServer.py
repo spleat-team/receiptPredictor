@@ -6,6 +6,7 @@ import cv2
 # use Flask to run easily python server
 app = Flask(__name__)
 
+
 def init():
     global is_receipt_model, detect_receipt_model, graph
 
@@ -18,7 +19,7 @@ def init():
         r'E:\Projects\ML_Project\Final_Project\detection\detector\detection_model.h5')
 
     # # compile the model - required?
-    is_receipt_model.compile(optimizer="sgd", loss='categorical_crossentropy')
+    # is_receipt_model.compile(optimizer="sgd", loss='categorical_crossentropy')
     # detect_receipt_model.compile(optimizer="sgd",loss='categorical_crossentropy')
 
     # load the graph and use it in prediction level
@@ -62,22 +63,27 @@ def detect_receipt():
     is_receipt = is_receipt_in_photo(npimg)
 
     if (is_receipt == "0"):
-        return is_receipt
+        return False
 
-    img = cv2.resize(npimg, (224, 224))
-    height, width, channels = npimg.shape
+    points1 = detect_receipt_points(npimg)
+    return str(points1.tolist())
+
+
+def detect_receipt_points(npimg):
+    original_img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+    height, width, channels = original_img.shape
+    img = cv2.resize(original_img, (224, 224))
     img = img / 255.0
     image_to_predict = numpy.expand_dims(img, axis=0)
-    pts = detect_receipt_model.predict(image_to_predict)
+    with graph.as_default():
+        pts = detect_receipt_model.predict(image_to_predict)
     pts = numpy.reshape(pts, (2, 4))
     X1 = (int(pts[0][0]), int(pts[1][0]))
     X2 = (int(pts[0][1]), int(pts[1][1]))
     X3 = (int(pts[0][2]), int(pts[1][2]))
     X4 = (int(pts[0][3]), int(pts[1][3]))
-
     ratio_x = width / 224.0;
     ratio_y = height / 224.0;
-
     points1 = numpy.float32([X1, X2, X3, X4])
     ratio = numpy.array([ratio_x, ratio_y])
     points1 = numpy.multiply(points1, ratio);
@@ -94,6 +100,7 @@ def main():
     # if we wnat to change a port. default 5000
     # app.run(host='127.0.0.1', port=8888)
     app.run()
+
 
 init()
 main()
