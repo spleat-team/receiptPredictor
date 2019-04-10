@@ -1,5 +1,17 @@
 # Receipt Detector Project
 
+## Requirement
+1. Python **3.6**
+2. flask installed
+
+## Install all pip dependencies
+
+install all pip dependencies from `requirements.txt` with:
+
+``` bash
+$ pip install -r requirements.txt
+```
+
 ## How to run flask app?
 
 on CMD:
@@ -16,13 +28,6 @@ on Linux:
   
 default port: 5000
 
-## Install all pip dependencies
-
-install all pip dependencies from `requirements.txt` with:
-
-``` bash
-$ pip install -r requirements.txt
-```
 ## Known Issues
 
 If you encounter the following problem :
