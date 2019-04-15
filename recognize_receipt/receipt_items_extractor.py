@@ -77,6 +77,30 @@ def IoU_by_y(dishes_list, prices_list):
 
     return l
 
+def IoU_by_y_with_threshold(dishes_list, prices_list):
+    l = list();
+    for dish in dishes_list:
+        all_prices_in_same_row = list()
+        best_iou_value = 0;
+        best_iou_price = ();
+
+        dish_box = foramt_4_points_bb_to_2_points_bb(dish)
+
+        for price in prices_list:
+            price_box = foramt_4_points_bb_to_2_points_bb(price)
+
+            curr_iou = bb_intersection_over_union(dish_box, price_box)
+
+            if (curr_iou > 0.8):
+                all_prices_in_same_row.append(price)
+
+        if (len(all_prices_in_same_row) > 0):
+            all_prices_in_same_row = sorted(all_prices_in_same_row, key=lambda curr_price: curr_price[0][0])
+
+            l.append({"price": all_prices_in_same_row[0], "dish": dish})
+
+    return l
+
 def crop_image(img, bounding_box):
     bb_2_points = foramt_4_points_bb_to_2_points_bb(bounding_box)
     Ax, Ay = bb_2_points[0]
@@ -109,7 +133,8 @@ def extract_items(img, dishes, prices):
     dishes_points = prep_points(dishes)
     prices_points = prep_points(prices)
 
-    prices_dishes_matches = IoU_by_y(dishes_points, prices_points)
+    prices_dishes_matches = IoU_by_y_with_threshold(dishes_points, prices_points)
+    prices_dishes_matches = sorted(prices_dishes_matches, key=lambda pair: pair["dish"][0][1])
 
     final_res = convert_points_to_images(img, prices_dishes_matches)
     print(final_res)
