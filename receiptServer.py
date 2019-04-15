@@ -2,25 +2,29 @@ from flask import Flask, render_template, request
 import tensorflow as tf
 import numpy
 import cv2
+from flask import jsonify
+
+
+from recognize_receipt.receipt_items_extractor import extract_items
+from recognize_receipt.text_detector import detect_price_detector, detect_dishes_detector
 
 # use Flask to run easily python server
 app = Flask(__name__)
 
-
 def init():
-    global is_receipt_model, detect_receipt_model, graph
-
-    # load the model
-    print("Loading is_receipt_model")
-    is_receipt_model = tf.keras.models.load_model(
-        r'resources/TrainModel/classify_model.h5')
-    print("Loading detect_receipt_model")
-    detect_receipt_model = tf.keras.models.load_model(
-        r'resources/TrainModel/detection_model.h5')
-
-    # load the graph and use it in prediction level
-    graph = tf.get_default_graph()
-
+    print("Server init")
+    # global is_receipt_model, detect_receipt_model, graph
+    #
+    # # load the model
+    # print("Loading is_receipt_model")
+    # is_receipt_model = tf.keras.models.load_model(
+    #     r'resources/TrainModel/classify_model.h5')
+    # print("Loading detect_receipt_model")
+    # detect_receipt_model = tf.keras.models.load_model(
+    #     r'resources/TrainModel/detection_model.h5')
+    #
+    # # load the graph and use it in prediction level
+    # graph = tf.get_default_graph()
 
 @app.route('/isReceipt', methods=['POST'])
 def isReceipt():
@@ -31,7 +35,6 @@ def isReceipt():
     npimg = numpy.fromstring(filestr, numpy.uint8)
 
     return is_receipt_in_photo(npimg)
-
 
 def is_receipt_in_photo(npimg):
     # convert numpy array to image and change the image size
@@ -46,7 +49,6 @@ def is_receipt_in_photo(npimg):
     # get the result
     finalResult = numpy.argmax(classes, axis=1)[0]
     return (str(finalResult))
-
 
 @app.route('/detectReceipt', methods=['POST'])
 def detect_receipt():
@@ -63,7 +65,6 @@ def detect_receipt():
 
     points1 = detect_receipt_points(npimg)
     return str(points1.tolist())
-
 
 def detect_receipt_points(npimg):
     original_img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
@@ -86,17 +87,31 @@ def detect_receipt_points(npimg):
     points1 = numpy.array(points1, numpy.float32)
     return points1
 
+@app.route('/extractReceiptItems', methods=['POST'])
+def extract_receipt_items():
+    # read image file string data
+    filestr = request.files['photo'].read()
+
+    # convert string data to numpy array
+    npimg = numpy.fromstring(filestr, numpy.uint8)
+
+    img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
+    stacked_img = numpy.stack((img,) * 3, axis=2)
+
+    prices = detect_price_detector(stacked_img);
+    dishes = detect_dishes_detector(stacked_img);
+
+    dishes_prices_json = extract_items(stacked_img, dishes, prices)
+    return jsonify(dishes_prices_json)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
 def main():
     # if we wnat to change a port. default 5000
-    # app.run(host='127.0.0.1', port=8888)
-    app.run()
-
+    app.run(host='0.0.0.0', port=8888)
+    # app.run()
 
 init()
 main()

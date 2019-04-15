@@ -1,0 +1,6 @@
+model_checkpoint_path: "/home/deep/price-detector/final-model/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-10101"
+all_model_checkpoint_paths: "/home/deep/EAST/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-6061"
+all_model_checkpoint_paths: "/home/deep/EAST/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-7071"
+all_model_checkpoint_paths: "/home/deep/EAST/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-8081"
+all_model_checkpoint_paths: "/home/deep/EAST/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-9091"
+all_model_checkpoint_paths: "/home/deep/EAST/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-10101"

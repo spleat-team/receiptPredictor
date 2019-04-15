@@ -1,0 +1,6 @@
+model_checkpoint_path: "/home/deep/receipt-detector/dishes-detector/checkpoints/final-model/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-11111"
+all_model_checkpoint_paths: "/home/deep/receipt-detector/dishes-detector/checkpoints/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-7071"
+all_model_checkpoint_paths: "/home/deep/receipt-detector/dishes-detector/checkpoints/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-8081"
+all_model_checkpoint_paths: "/home/deep/receipt-detector/dishes-detector/checkpoints/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-9091"
+all_model_checkpoint_paths: "/home/deep/receipt-detector/dishes-detector/checkpoints/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-10101"
+all_model_checkpoint_paths: "/home/deep/receipt-detector/dishes-detector/checkpoints/east_icdar2015_resnet_v1_50_rboxmodel.ckpt-11111"
