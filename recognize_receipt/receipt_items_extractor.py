@@ -91,7 +91,7 @@ def IoU_by_y_with_threshold(dishes_list, prices_list):
 
             curr_iou = bb_intersection_over_union(dish_box, price_box)
 
-            if (curr_iou > 0.8):
+            if (curr_iou >= 0.6):
                 all_prices_in_same_row.append(price)
 
         if (len(all_prices_in_same_row) > 0):
