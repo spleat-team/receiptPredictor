@@ -24,6 +24,7 @@ global_step = tf.get_variable('global_step', [], initializer=tf.constant_initial
 f_score, f_geometry = model(input_images, is_training=False)
 
 variable_averages = tf.train.ExponentialMovingAverage(0.997, global_step)
+tf.reset_default_graph()
 saver_price_detector = tf.train.Saver(variable_averages.variables_to_restore())
 saver_dishes_detector = tf.train.Saver(variable_averages.variables_to_restore())
 gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
@@ -101,7 +102,7 @@ def detect_price_detector(img):
     score, geometry = sess_price_detector.run(
             [f_score, f_geometry],
             feed_dict={input_images: [im_resized[:,:,::-1]]})
-    boxes, timer = detect_east(score_map=score, geo_map=geometry, timer=timer, box_thresh=0.25)
+    boxes, timer = detect_east(score_map=score, geo_map=geometry, timer=timer)
     
     if boxes is not None:
             scores = boxes[:,8].reshape(-1)
@@ -137,7 +138,7 @@ def detect_dishes_detector(img):
     score, geometry = sess_dishes_detector.run(
         [f_score, f_geometry],
         feed_dict={input_images: [im_resized[:, :, ::-1]]})
-    boxes, timer = detect_east(score_map=score, geo_map=geometry, timer=timer, box_thresh=0.25)
+    boxes, timer = detect_east(score_map=score, geo_map=geometry, timer=timer)
 
     if boxes is not None:
         scores = boxes[:, 8].reshape(-1)

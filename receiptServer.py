@@ -3,28 +3,30 @@ import tensorflow as tf
 import numpy
 import cv2
 from flask import jsonify
-
+from flask_cors import CORS
 
 from recognize_receipt.receipt_items_extractor import extract_items
 from recognize_receipt.text_detector import detect_price_detector, detect_dishes_detector
 
 # use Flask to run easily python server
 app = Flask(__name__)
+cors = CORS(app)
 
 def init():
-    print("Server init")
-    # global is_receipt_model, detect_receipt_model, graph
-    #
-    # # load the model
-    # print("Loading is_receipt_model")
-    # is_receipt_model = tf.keras.models.load_model(
-    #     r'resources/TrainModel/classify_model.h5')
-    # print("Loading detect_receipt_model")
-    # detect_receipt_model = tf.keras.models.load_model(
-    #     r'resources/TrainModel/detection_model.h5')
-    #
-    # # load the graph and use it in prediction level
-    # graph = tf.get_default_graph()
+    global is_receipt_model, detect_receipt_model, digits_model, graph
+
+    # load the model
+    is_receipt_model = tf.keras.models.load_model(
+        r'resources/TrainModel/classify_model.h5')
+
+    detect_receipt_model = tf.keras.models.load_model(
+        r'resources/TrainModel/detection_model.h5')
+
+    digits_model = tf.keras.models.load_model(
+        r'resources/TrainModel/digits_model.h5')
+
+    # load the graph and use it in prediction level
+    graph = tf.get_default_graph()
 
 @app.route('/isReceipt', methods=['POST'])
 def isReceipt():
@@ -101,7 +103,7 @@ def extract_receipt_items():
     prices = detect_price_detector(stacked_img);
     dishes = detect_dishes_detector(stacked_img);
 
-    dishes_prices_json = extract_items(stacked_img, dishes, prices)
+    dishes_prices_json = extract_items(stacked_img, dishes, prices, digits_model, graph)
     return jsonify(dishes_prices_json)
 
 @app.route('/')
